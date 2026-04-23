@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-base: #080f1a;
+  --color-bg-surface: #0d1b2a;
+  --color-bg-elevated: #132238;
+  --color-bg-subtle: #1a2f4a;
+
+  --color-accent-primary: #00c2ff;
+  --color-accent-second: #00e5a0;
+  --color-accent-warn: #ffb830;
+  --color-accent-danger: #ff4d6d;
+
+  --color-text-primary: #e8f0f8;
+  --color-text-secondary: #7a9bbf;
+  --color-text-muted: #3d5a7a;
+
+  --color-border-subtle: #1e3550;
+  --color-border-active: #00c2ff33;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Custom Box Shadows */
+  --shadow-card: 0 1px 3px #00000066, 0 0 0 1px var(--color-border-subtle);
+  --shadow-glow-primary: 0 0 20px #00c2ff22;
+  --shadow-glow-success: 0 0 20px #00e5a022;
+}
+
+:root {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+@layer utilities {
+  .text-label {
+    font-family: var(--font-body);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+  }
+}
+
+/* Base resets */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  /* subtle transition for theme switching if ever needed */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.input-glow:focus, .input-glow:focus-within {
+  border-color: var(--color-accent-primary);
+  box-shadow: var(--shadow-glow-primary);
+  outline: none;
+}
