@@ -33,7 +33,7 @@ export const Step3Questionnaire = ({ control, errors, watch }) => {
     >
       {/* Left Column: Quantitative */}
       <div className="flex-1 flex flex-col gap-6">
-        <div className="bg-[var(--color-bg-elevated)] p-8 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] relative overflow-hidden flex flex-col gap-8 h-full">
+        <div className="bg-[var(--color-bg-elevated)] backdrop-blur-md p-8 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] relative overflow-hidden flex flex-col gap-8 h-full">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-second)]" />
           
           <div className="flex flex-col gap-2">
@@ -113,7 +113,7 @@ export const Step3Questionnaire = ({ control, errors, watch }) => {
       </div>
 
       {/* Right Column: Qualitative Scales */}
-      <div className="flex-[1.5] bg-[var(--color-bg-surface)] p-8 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] flex flex-col gap-6">
+      <div className="flex-[1.5] bg-[var(--color-bg-surface)] backdrop-blur-md p-8 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] flex flex-col gap-6">
         <h2 className="font-display text-xl font-bold text-[var(--color-text-primary)] mb-2">Valutazione Qualitativa</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

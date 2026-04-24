@@ -12,7 +12,7 @@ export const StepIndicator = ({ currentStep }) => {
     <div className="w-full max-w-2xl mx-auto py-6">
       <div className="flex justify-between items-center relative">
         {/* Background line */}
-        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[var(--color-bg-elevated)] -translate-y-1/2 z-0" />
+        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[var(--color-border-active)] -translate-y-1/2 z-0" />
         {/* Active line */}
         <motion.div
           className="absolute top-1/2 left-0 h-0.5 bg-[var(--color-accent-primary)] -translate-y-1/2 z-0 origin-left"
@@ -31,12 +31,12 @@ export const StepIndicator = ({ currentStep }) => {
               <motion.div
                 initial={false}
                 animate={{
-                  backgroundColor: isCompleted || isActive ? "var(--color-accent-primary)" : "var(--color-bg-surface)",
+                  backgroundColor: isCompleted || isActive ? "var(--color-accent-primary)" : "#FFFFFF",
                   borderColor: isCompleted || isActive ? "var(--color-accent-primary)" : "var(--color-text-muted)",
                   boxShadow: isActive ? "var(--shadow-glow-primary)" : "none",
                 }}
                 className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors duration-300 ${
-                  isCompleted ? "text-black" : isActive ? "text-black" : "text-[var(--color-text-muted)]"
+                  isCompleted ? "text-white" : isActive ? "text-white" : "text-[var(--color-text-muted)]"
                 }`}
               >
                 <span className="font-mono text-sm font-bold">{step.num}</span>

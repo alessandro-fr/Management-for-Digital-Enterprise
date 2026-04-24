@@ -22,7 +22,7 @@ export const Select = forwardRef(({ label, options, value, onChange, error, plac
     <div className={`flex flex-col gap-1 w-full relative ${className}`} ref={containerRef}>
       {label && <label className="text-label text-[var(--color-text-secondary)]">{label}</label>}
       <div
-        className={`w-full bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)] rounded-[2px] px-3 py-2 flex items-center justify-between cursor-pointer transition-all duration-200 hover:border-[var(--color-border-active)] ${
+        className={`w-full bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)] rounded-md px-3 py-2 flex items-center justify-between cursor-pointer transition-all duration-200 hover:border-[var(--color-border-active)] ${
           isOpen ? "border-[var(--color-accent-primary)] shadow-[var(--shadow-glow-primary)]" : ""
         } ${error ? "border-[var(--color-accent-danger)]" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
@@ -48,7 +48,7 @@ export const Select = forwardRef(({ label, options, value, onChange, error, plac
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-10 top-[calc(100%+4px)] left-0 w-full bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] rounded-[6px] shadow-[var(--shadow-card)] overflow-hidden max-h-60 overflow-y-auto"
+            className="absolute z-10 top-[calc(100%+4px)] left-0 w-full bg-white border border-[var(--color-border-subtle)] rounded-md shadow-[var(--shadow-card)] overflow-hidden max-h-60 overflow-y-auto"
           >
             {options.map((opt) => (
               <div

@@ -7,7 +7,7 @@ export const Input = forwardRef(({ label, error, className = "", rightIcon, ...p
       <div className="relative">
         <input
           ref={ref}
-          className={`w-full bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)] rounded-[2px] px-3 py-2 font-mono text-sm transition-all duration-200 input-glow placeholder-[var(--color-text-muted)] ${
+          className={`w-full bg-[var(--color-bg-subtle)] text-[var(--color-text-primary)] border border-[var(--color-border-subtle)] rounded-md px-3 py-2 font-mono text-sm transition-all duration-200 input-glow placeholder-[var(--color-text-muted)] ${
             error ? "border-[var(--color-accent-danger)]" : ""
           } ${rightIcon ? "pr-10" : ""}`}
           {...props}

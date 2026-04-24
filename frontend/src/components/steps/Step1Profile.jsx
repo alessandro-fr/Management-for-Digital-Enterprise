@@ -19,7 +19,7 @@ export const Step1Profile = ({ register, control, errors }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="w-full max-w-2xl mx-auto flex flex-col gap-8 bg-[var(--color-bg-elevated)] p-8 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] relative overflow-hidden"
+      className="w-full max-w-2xl mx-auto flex flex-col gap-8 bg-[var(--color-bg-elevated)] backdrop-blur-md p-8 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] relative overflow-hidden"
     >
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-second)]" />
       

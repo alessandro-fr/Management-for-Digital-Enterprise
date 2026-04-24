@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 
 export const QualitativeScale = forwardRef(({ label, minLabel, maxLabel, error, className = "", value, onChange, ...props }, ref) => {
   return (
-    <div className={`flex flex-col gap-3 w-full p-4 bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] rounded-[6px] transition-colors hover:border-[var(--color-border-active)] ${className}`}>
+    <div className={`flex flex-col gap-3 w-full p-4 bg-white border border-[var(--color-border-subtle)] rounded-md transition-colors hover:border-[var(--color-border-active)] ${className}`}>
       {label && <label className="text-[var(--color-text-primary)] font-medium text-sm">{label}</label>}
       <div className="flex flex-col gap-2">
         <div className="relative flex justify-between items-center w-full px-2">
@@ -25,7 +25,7 @@ export const QualitativeScale = forwardRef(({ label, minLabel, maxLabel, error, 
                 <div
                   className={`w-4 h-4 rounded-full border-2 transition-all duration-200 ${
                     isSelected
-                      ? "border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)] shadow-[var(--shadow-glow-primary)] scale-125"
+                      ? "border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)] shadow-[var(--shadow-glow-primary)] scale-110"
                       : "border-[var(--color-text-muted)] bg-[var(--color-bg-surface)] group-hover:border-[var(--color-text-secondary)]"
                   }`}
                 />

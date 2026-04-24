@@ -15,7 +15,7 @@ export const Slider = forwardRef(({ label, error, min = 0, max = 100, step = 1, 
         min={min}
         max={max}
         step={step}
-        className="w-full h-1 bg-[var(--color-bg-elevated)] rounded-lg appearance-none cursor-pointer accent-[var(--color-accent-primary)] hover:accent-[var(--color-accent-second)] transition-all duration-200"
+        className="w-full h-1 bg-[var(--color-border-subtle)] rounded appearance-none cursor-pointer accent-[var(--color-accent-primary)] hover:accent-[var(--color-accent-second)] transition-all duration-200"
         {...props}
       />
       <style>{`
@@ -30,7 +30,7 @@ export const Slider = forwardRef(({ label, error, min = 0, max = 100, step = 1, 
           transition: transform 0.1s;
         }
         input[type=range]::-webkit-slider-thumb:hover {
-          transform: scale(1.2);
+          transform: scale(1.1);
         }
       `}</style>
       {error && <span className="text-[var(--color-accent-danger)] text-xs">{error.message}</span>}

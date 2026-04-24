@@ -27,8 +27,7 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
       className="w-full max-w-4xl mx-auto flex flex-col md:flex-row gap-8"
     >
       {/* Left Column: Form Inputs */}
-      <div className="flex-1 flex flex-col gap-6 bg-[var(--color-bg-elevated)] p-8 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-second)]" />
+      <div className="flex-1 flex flex-col gap-6 bg-[var(--color-bg-elevated)] backdrop-blur-md p-8 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] relative overflow-hidden">
         
         <div className="flex flex-col gap-2 mb-2">
           <h2 className="font-display text-2xl font-bold text-[var(--color-text-primary)]">Dati di Bilancio</h2>
@@ -73,7 +72,7 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
 
       {/* Right Column: Preview & Slider */}
       <div className="flex-1 flex flex-col gap-6">
-        <div className="bg-[var(--color-bg-surface)] p-6 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] flex flex-col gap-6">
+        <div className="bg-[var(--color-bg-surface)] backdrop-blur-md p-6 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] flex flex-col gap-6">
           <h3 className="font-mono text-sm tracking-widest text-[var(--color-text-secondary)]">PREVIEW CALCOLATA</h3>
           
           <div className="flex flex-col gap-4">
@@ -88,14 +87,14 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
             </div>
           </div>
 
-          <div className="p-4 bg-[var(--color-bg-base)] rounded-[6px] border border-[var(--color-border-subtle)]">
+          <div className="p-4 bg-[var(--color-bg-base)] rounded-md border border-[var(--color-border-subtle)]">
             <p className="text-xs text-[var(--color-text-muted)] italic">
               Calcolato automaticamente dai dati inseriti (CAGR su 3 anni).
             </p>
           </div>
         </div>
 
-        <div className="bg-[var(--color-bg-elevated)] p-6 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)]">
+        <div className="bg-[var(--color-bg-elevated)] backdrop-blur-md p-6 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)]">
           <h3 className="font-mono text-sm tracking-widest text-[var(--color-text-secondary)] mb-4">DATO IBRIDO</h3>
           <Controller
             name="techInvestment"

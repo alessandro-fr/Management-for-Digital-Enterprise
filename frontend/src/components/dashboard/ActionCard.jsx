@@ -6,7 +6,7 @@ export const ActionCard = ({ index, action, delay = 0 }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
-      className="p-4 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-elevated)] hover:border-[var(--color-border-active)] transition-all group flex flex-col gap-3 relative overflow-hidden"
+      className="p-4 rounded-md backdrop-blur-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-elevated)] hover:border-[var(--color-border-active)] transition-all group flex flex-col gap-3 relative overflow-hidden"
     >
       <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-accent-second)] opacity-50 group-hover:opacity-100 transition-opacity" />
       

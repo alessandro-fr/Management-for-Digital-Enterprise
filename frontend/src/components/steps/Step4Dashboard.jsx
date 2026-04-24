@@ -74,20 +74,20 @@ export const Step4Dashboard = ({ result, onReset }) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Radar Chart area */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="lg:col-span-1 bg-[var(--color-bg-elevated)] p-6 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] flex flex-col items-center justify-center"
+          className="lg:col-span-2 bg-[var(--color-bg-elevated)] backdrop-blur-md p-6 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] flex flex-col items-center justify-center"
         >
           <h3 className="font-display text-lg font-bold text-[var(--color-text-primary)] w-full text-left mb-4">Radar 4 Capitali</h3>
           <RadarChart data={radarData} />
         </motion.div>
 
         {/* Priority Actions */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
+        <div className="lg:col-span-3 flex flex-col gap-4">
           <motion.h3 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -109,7 +109,7 @@ export const Step4Dashboard = ({ result, onReset }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.0 }}
-        className="bg-[var(--color-bg-elevated)] p-6 rounded-xl border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)]"
+        className="bg-[var(--color-bg-elevated)] backdrop-blur-md p-6 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)]"
       >
         <h3 className="font-display text-lg font-bold text-[var(--color-text-primary)] mb-6">Score Breakdown vs Benchmark</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
