@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { Input, Slider } from "../ui";
 import { motion } from "framer-motion";
 import { Controller } from "react-hook-form";
@@ -5,6 +6,9 @@ import { useLanguage } from "../../i18n";
 
 export const Step2Financials = ({ register, control, errors, watch }) => {
   const { t } = useLanguage();
+  const [dragActive, setDragActive] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const fileInputRef = useRef(null);
   
   const rev1 = parseFloat(watch("revenueY1")) || 0;
   const rev3 = parseFloat(watch("revenueY3")) || 0;
@@ -22,6 +26,41 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
     margin = (ebitda / rev3) * 100;
   }
 
+  // Drag and Drop handlers
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setUploadedFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      setUploadedFile(e.target.files[0]);
+    }
+  };
+
+  const removeFile = (e) => {
+    e.stopPropagation();
+    setUploadedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -33,9 +72,84 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
       {/* Left Column: Form Inputs */}
       <div className="flex flex-col gap-8 bento-card p-8 sm:p-10">
         
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col gap-2">
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text-primary)]">{t("s2Title")}</h2>
           <p className="text-[var(--color-text-secondary)]">{t("s2Desc")}</p>
+        </div>
+
+        {/* Upload Box */}
+        <div 
+          className={`relative flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl transition-all cursor-pointer group
+            ${dragActive 
+              ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/5 scale-[1.02] shadow-sm' 
+              : 'border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-subtle)] hover:border-[var(--color-border-default)]'
+            }
+            ${uploadedFile ? 'bg-[var(--color-bg-subtle)] border-solid border-[var(--color-border-default)] cursor-default hover:bg-[var(--color-bg-subtle)]' : ''}
+          `}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          onClick={() => !uploadedFile && fileInputRef.current?.click()}
+        >
+          <input 
+            ref={fileInputRef}
+            type="file" 
+            className="hidden" 
+            accept=".pdf,.xlsx,.xls,.xml" 
+            onChange={handleChange} 
+          />
+          
+          {uploadedFile ? (
+            <div className="flex items-center justify-between w-full gap-4 px-2">
+              <div className="flex items-center gap-4 overflow-hidden">
+                <div className="p-2.5 bg-[var(--color-bg-base)] rounded-xl shadow-sm border border-[var(--color-border-subtle)] flex-shrink-0">
+                  <svg className="w-6 h-6 text-[var(--color-accent-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-sm font-semibold text-[var(--color-text-primary)] truncate" title={uploadedFile.name}>
+                    {uploadedFile.name}
+                  </span>
+                  <span className="text-xs font-mono text-[var(--color-text-muted)]">
+                    {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                  </span>
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={removeFile}
+                className="p-2 text-[var(--color-text-muted)] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                title={t("s2RemoveFile")}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-2.5 text-center pointer-events-none">
+              <div className="p-3.5 bg-[var(--color-bg-base)] rounded-2xl shadow-sm border border-[var(--color-border-subtle)] mb-2 group-hover:scale-105 transition-transform">
+                <svg className="w-6 h-6 text-[var(--color-text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+              </div>
+              <span className="font-semibold text-[var(--color-text-primary)] text-sm">{t("s2UploadTitle")}</span>
+              <span className="text-xs text-[var(--color-text-secondary)]">{t("s2UploadDesc")}</span>
+              <span className="text-[10px] text-[var(--color-text-muted)] mt-2 font-mono font-medium bg-[var(--color-bg-subtle)] px-2 py-1 rounded-md border border-[var(--color-border-subtle)] uppercase tracking-wider">
+                {t("s2UploadFormats")}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="h-px w-full bg-[var(--color-border-subtle)] my-2 relative">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="bg-[var(--color-bg-base)] px-4 text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
+              {t("s2Or")}
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-col gap-6">
