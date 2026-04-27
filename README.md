@@ -44,3 +44,11 @@ Come lo spieghi in presentazione
 La risposta più efficace alla giuria è questa:
 
 "I pesi non sono arbitrari — seguono tre principi gerarchici. Primo: le variabili oggettive e verificabili pesano più di quelle dichiarate. Secondo: i fattori che impattano direttamente la trasferibilità dell'azienda pesano più di quelli contestuali. Terzo: abbiamo evitato il doppio conteggio assegnando peso minore alle variabili già catturate indirettamente da altre."
+
+
+
+## Step 3 Questionaire - Logica
+Le tre voci ora modificano il Live Score Preview. Ecco cosa è cambiato:
+
+Tech Focus (verde) — proxy del Capitale Tecnologico, reagisce a Maturità Digitale (peso 40/65) e Scalabilità del Modello (peso 25/65), normalizzati sui pesi disponibili (senza tech_investment che non è un input del form)
+Relational Focus (viola) — proxy del Capitale Relazionale, reagisce a Forza della Rete (60%) e alla concentrazione clienti (40%), specchiando esattamente la formula backend

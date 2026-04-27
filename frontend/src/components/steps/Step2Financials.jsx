@@ -1,8 +1,11 @@
 import { Input, Slider } from "../ui";
 import { motion } from "framer-motion";
 import { Controller } from "react-hook-form";
+import { useLanguage } from "../../i18n";
 
 export const Step2Financials = ({ register, control, errors, watch }) => {
+  const { t } = useLanguage();
+  
   const rev1 = parseFloat(watch("revenueY1")) || 0;
   const rev3 = parseFloat(watch("revenueY3")) || 0;
   const ebitda = parseFloat(watch("ebitda")) || 0;
@@ -21,81 +24,82 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="w-full max-w-4xl mx-auto flex flex-col md:flex-row gap-8"
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className="w-full max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-6"
     >
       {/* Left Column: Form Inputs */}
-      <div className="flex-1 flex flex-col gap-6 bg-[var(--color-bg-elevated)] backdrop-blur-md p-8 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] relative overflow-hidden">
+      <div className="flex flex-col gap-8 bento-card p-8 sm:p-10">
         
         <div className="flex flex-col gap-2 mb-2">
-          <h2 className="font-display text-2xl font-bold text-[var(--color-text-primary)]">Dati di Bilancio</h2>
-          <p className="text-[var(--color-text-secondary)] text-sm">Inserisci i dati oggettivi verificabili dal bilancio aziendale.</p>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--color-text-primary)]">{t("s2Title")}</h2>
+          <p className="text-[var(--color-text-secondary)]">{t("s2Desc")}</p>
         </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           <Input
-            label="REVENUE ANNO 1 (€)"
+            label={t("s2Rev1")}
             type="number"
             placeholder="0"
-            rightIcon="€"
+            rightIcon={<span className="text-[var(--color-text-muted)] text-sm">€</span>}
             error={errors.revenueY1}
-            {...register("revenueY1", { required: "Campo obbligatorio", min: { value: 1, message: "Deve essere > 0" } })}
+            {...register("revenueY1", { required: t("s2Req"), min: { value: 1, message: t("s2Min") } })}
           />
           <Input
-            label="REVENUE ANNO 2 (€)"
+            label={t("s2Rev2")}
             type="number"
             placeholder="0"
-            rightIcon="€"
+            rightIcon={<span className="text-[var(--color-text-muted)] text-sm">€</span>}
             error={errors.revenueY2}
-            {...register("revenueY2", { required: "Campo obbligatorio", min: { value: 1, message: "Deve essere > 0" } })}
+            {...register("revenueY2", { required: t("s2Req"), min: { value: 1, message: t("s2Min") } })}
           />
           <Input
-            label="REVENUE ANNO 3 (€) - Più recente"
+            label={t("s2Rev3")}
             type="number"
             placeholder="0"
-            rightIcon="€"
+            rightIcon={<span className="text-[var(--color-text-muted)] text-sm">€</span>}
             error={errors.revenueY3}
-            {...register("revenueY3", { required: "Campo obbligatorio", min: { value: 1, message: "Deve essere > 0" } })}
+            {...register("revenueY3", { required: t("s2Req"), min: { value: 1, message: t("s2Min") } })}
           />
           <Input
-            label="EBITDA (€) - Anno 3"
+            label={t("s2Ebitda")}
             type="number"
             placeholder="0"
-            rightIcon="€"
+            rightIcon={<span className="text-[var(--color-text-muted)] text-sm">€</span>}
             error={errors.ebitda}
-            {...register("ebitda", { required: "Campo obbligatorio" })}
+            {...register("ebitda", { required: t("s2Req") })}
           />
         </div>
       </div>
 
       {/* Right Column: Preview & Slider */}
-      <div className="flex-1 flex flex-col gap-6">
-        <div className="bg-[var(--color-bg-surface)] backdrop-blur-md p-6 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)] flex flex-col gap-6">
-          <h3 className="font-mono text-sm tracking-widest text-[var(--color-text-secondary)]">PREVIEW CALCOLATA</h3>
+      <div className="flex flex-col gap-6">
+        <div className="bento-card p-8 flex flex-col gap-8">
+          <h3 className="text-sm font-medium text-[var(--color-text-secondary)] tracking-wide uppercase">{t("s2Preview")}</h3>
           
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-end border-b border-[var(--color-border-subtle)] pb-2">
-              <span className="text-[var(--color-text-primary)] text-sm font-medium">EBITDA Margin</span>
-              <span className="font-mono text-xl font-bold text-[var(--color-accent-second)]">{margin.toFixed(1)}%</span>
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-center border-b border-[var(--color-border-subtle)] pb-4">
+              <span className="text-[var(--color-text-primary)] font-medium">EBITDA Margin</span>
+              <span className="font-mono text-3xl font-bold tracking-tighter text-[var(--color-text-primary)]">{margin.toFixed(1)}<span className="text-lg text-[var(--color-text-muted)]">%</span></span>
             </div>
             
-            <div className="flex justify-between items-end border-b border-[var(--color-border-subtle)] pb-2">
-              <span className="text-[var(--color-text-primary)] text-sm font-medium">Revenue CAGR</span>
-              <span className="font-mono text-xl font-bold text-[var(--color-accent-second)]">{cagr.toFixed(1)}%</span>
+            <div className="flex justify-between items-center border-b border-[var(--color-border-subtle)] pb-4">
+              <span className="text-[var(--color-text-primary)] font-medium">Revenue CAGR</span>
+              <span className="font-mono text-3xl font-bold tracking-tighter text-[var(--color-text-primary)]">{cagr.toFixed(1)}<span className="text-lg text-[var(--color-text-muted)]">%</span></span>
             </div>
           </div>
 
-          <div className="p-4 bg-[var(--color-bg-base)] rounded-md border border-[var(--color-border-subtle)]">
-            <p className="text-xs text-[var(--color-text-muted)] italic">
-              Calcolato automaticamente dai dati inseriti (CAGR su 3 anni).
+          <div className="p-4 bg-[var(--color-bg-subtle)] rounded-xl text-center">
+            <p className="text-xs text-[var(--color-text-secondary)]">
+              {t("s2PreviewDesc")}
             </p>
           </div>
         </div>
 
-        <div className="bg-[var(--color-bg-elevated)] backdrop-blur-md p-6 rounded-md border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)]">
-          <h3 className="font-mono text-sm tracking-widest text-[var(--color-text-secondary)] mb-4">DATO IBRIDO</h3>
+        <div className="bento-card p-8 flex flex-col gap-6">
+          <h3 className="text-sm font-medium text-[var(--color-text-secondary)] tracking-wide uppercase">{t("s2Hybrid")}</h3>
           <Controller
             name="techInvestment"
             control={control}
@@ -112,8 +116,8 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
               />
             )}
           />
-          <p className="text-xs text-[var(--color-text-muted)] mt-4">
-            * Dato dichiarato — da validare in seguito con i bilanci
+          <p className="text-xs text-[var(--color-text-muted)] pt-2 border-t border-[var(--color-border-subtle)]">
+            {t("s2HybridDesc")}
           </p>
         </div>
       </div>

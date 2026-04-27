@@ -1,79 +1,70 @@
 import { Radar, RadarChart as RechartsRadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { useLanguage } from "../../i18n";
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, t }) => {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   return (
-    <div style={{
-      background: "rgba(255,255,255,0.92)",
-      backdropFilter: "blur(8px)",
-      WebkitBackdropFilter: "blur(8px)",
-      border: "1px solid rgba(0,0,0,0.08)",
-      borderRadius: "6px",
-      padding: "10px 14px",
-      fontSize: "12px",
-      fontFamily: "Inter, system-ui, sans-serif",
-      boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-      minWidth: "140px",
-    }}>
-      <p style={{ fontWeight: 600, color: "var(--color-text-primary)", marginBottom: "6px" }}>{d.capital}</p>
-      <p style={{ color: "var(--color-accent-primary)", marginBottom: "2px" }}>
-        Attuale: <strong>{(d.actual * 100).toFixed(0)}</strong>/100
-      </p>
-      <p style={{ color: "var(--color-text-muted)" }}>
-        Benchmark: {(d.benchmark * 100).toFixed(0)}/100
-      </p>
+    <div className="bento-card p-4 min-w-[160px] flex flex-col gap-1.5 shadow-xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)]">
+      <p className="font-semibold text-sm text-[var(--color-text-primary)] border-b border-[var(--color-border-subtle)] pb-2 mb-1">{d.capital}</p>
+      <div className="flex justify-between items-center gap-4 text-sm">
+        <span className="text-[var(--color-text-secondary)]">{t("actual")}:</span>
+        <strong className="text-[var(--color-accent-primary)] font-mono">{(d.actual * 100).toFixed(0)}<span className="text-xs font-normal">/100</span></strong>
+      </div>
+      <div className="flex justify-between items-center gap-4 text-sm">
+        <span className="text-[var(--color-text-muted)]">{t("target")}:</span>
+        <span className="text-[var(--color-text-secondary)] font-mono">{(d.benchmark * 100).toFixed(0)}<span className="text-xs font-normal">/100</span></span>
+      </div>
     </div>
   );
 };
 
-const CustomTick = ({ payload, x, y, cx, cy }) => {
-  const dx = x - cx;
-  const isRight = dx > 1;
-  const isLeft = dx < -1;
-  return (
-    <text
-      x={x + (isRight ? 8 : isLeft ? -8 : 0)}
-      y={y}
-      textAnchor={isRight ? "start" : isLeft ? "end" : "middle"}
-      dominantBaseline="central"
-      fill="var(--color-text-secondary)"
-      fontSize={12}
-      fontFamily="Inter, system-ui, sans-serif"
-    >
-      {payload.value}
-    </text>
-  );
-};
-
 export const RadarChart = ({ data }) => {
+  const { t } = useLanguage();
+
   return (
-    <div className="w-full h-[420px]">
+    <div className="w-full h-[400px]">
       <ResponsiveContainer width="100%" height="100%">
-        <RechartsRadarChart cx="50%" cy="50%" outerRadius="58%" data={data}>
-          <PolarGrid stroke="var(--color-border-subtle)" />
-          <PolarAngleAxis dataKey="capital" tick={<CustomTick />} />
+        <RechartsRadarChart cx="50%" cy="50%" outerRadius="60%" data={data}>
+          <PolarGrid stroke="var(--color-border-subtle)" strokeDasharray="3 3" />
+          <PolarAngleAxis 
+            dataKey="capital" 
+            tick={{ fill: 'var(--color-text-secondary)', fontSize: 12, fontWeight: 500 }} 
+          />
           <PolarRadiusAxis angle={30} domain={[0, 1]} tick={false} axisLine={false} />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip t={t} />} cursor={false} />
 
           <Radar
-            name="Valore Attuale"
+            name={t("actual")}
             dataKey="actual"
             stroke="var(--color-accent-primary)"
+            strokeWidth={2}
             fill="var(--color-accent-primary)"
-            fillOpacity={0.3}
+            fillOpacity={0.15}
             isAnimationActive={true}
+            animationDuration={1500}
+            animationEasing="ease-out"
           />
           <Radar
-            name="Benchmark"
+            name={t("target")}
             dataKey="benchmark"
             stroke="var(--color-text-muted)"
+            strokeWidth={1.5}
             fill="var(--color-text-muted)"
-            fillOpacity={0.15}
-            strokeDasharray="3 3"
+            fillOpacity={0.05}
+            strokeDasharray="4 4"
             isAnimationActive={true}
+            animationDuration={1500}
+            animationEasing="ease-out"
           />
-          <Legend wrapperStyle={{ fontSize: '12px', color: 'var(--color-text-secondary)' }} />
+          <Legend 
+            iconType="circle" 
+            wrapperStyle={{ 
+              fontSize: '12px', 
+              color: 'var(--color-text-secondary)', 
+              paddingTop: '20px' 
+            }} 
+          />
         </RechartsRadarChart>
       </ResponsiveContainer>
     </div>

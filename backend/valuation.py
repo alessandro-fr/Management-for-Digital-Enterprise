@@ -265,9 +265,6 @@ def run_valuation(scoring_output: dict, raw_inputs: dict, sector: str, objective
     # Calcoli
     valuation     = calculate_value(ebitda, sector, sqf, gf)
     value_gap     = calculate_value_gap(ebitda, sector, sqf, gf)
-    actions       = generate_recommendations(
-                        scoring_output["scores"], raw_inputs, objective
-                    )
 
     return {
         # Valutazione

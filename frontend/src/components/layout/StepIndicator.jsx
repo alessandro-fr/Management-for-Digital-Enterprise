@@ -1,19 +1,20 @@
 import { motion } from "framer-motion";
+import { useLanguage } from "../../i18n";
 
 export const StepIndicator = ({ currentStep }) => {
+  const { t } = useLanguage();
+
   const steps = [
-    { num: 1, label: "Profilo" },
-    { num: 2, label: "Bilancio" },
-    { num: 3, label: "Quiz" },
-    { num: 4, label: "Dashboard" },
+    { num: 1, label: t("stepProfile") },
+    { num: 2, label: t("stepFinancials") },
+    { num: 3, label: t("stepQuiz") },
+    { num: 4, label: t("stepDashboard") },
   ];
 
   return (
     <div className="w-full max-w-2xl mx-auto py-6">
       <div className="flex justify-between items-center relative">
-        {/* Background line */}
         <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[var(--color-border-active)] -translate-y-1/2 z-0" />
-        {/* Active line */}
         <motion.div
           className="absolute top-1/2 left-0 h-0.5 bg-[var(--color-accent-primary)] -translate-y-1/2 z-0 origin-left"
           initial={{ scaleX: 0 }}
@@ -24,7 +25,6 @@ export const StepIndicator = ({ currentStep }) => {
         {steps.map((step, idx) => {
           const isCompleted = step.num < currentStep;
           const isActive = step.num === currentStep;
-          // Dashboard step might never be "completed" during progression until reached.
 
           return (
             <div key={step.num} className="relative z-10 flex flex-col items-center gap-2">
