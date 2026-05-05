@@ -52,3 +52,8 @@ Le tre voci ora modificano il Live Score Preview. Ecco cosa è cambiato:
 
 Tech Focus (verde) — proxy del Capitale Tecnologico, reagisce a Maturità Digitale (peso 40/65) e Scalabilità del Modello (peso 25/65), normalizzati sui pesi disponibili (senza tech_investment che non è un input del form)
 Relational Focus (viola) — proxy del Capitale Relazionale, reagisce a Forza della Rete (60%) e alla concentrazione clienti (40%), specchiando esattamente la formula backend
+
+
+## Banca Dati
+"Le soglie di normalizzazione sono calibrate empiricamente su un campione di 4.184 PMI italiane ATECO 62 estratto da AIDA — Bureau van Dijk, aprile 2026. La mediana del ROS per il settore è 5.79%, significativamente inferiore alle assunzioni generiche della letteratura — questo dimostra perché un modello calibrato sul contesto italiano è necessario."
+
