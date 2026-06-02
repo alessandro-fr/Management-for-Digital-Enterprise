@@ -21,15 +21,28 @@ const DEMO = {
   revenueY2:           3100000,
   revenueY3:           3500000,
   ebitda:              560000,
+  netFinancialPosition: 450000,
   techInvestment:      3.2,
   recurringRevenue:    35,
   clientConcentration: 55,
-  founderDependency:   "4",
-  managementStructure: "3",
-  digitalMaturity:     "3",
-  clientPortfolio:     "2",
-  scalability:         "3",
-  networkStrength:     "2",
+  // Human Capital
+  keyManRisk:           "4",
+  spanOfControl:        "3",
+  skillInvestment:      "2",
+  talentRetention:      "3",
+  sopStandardization:   "2",
+  // Technological Capital
+  operationalDigitalization: "3",
+  dataStorage:               "3",
+  workflowAutomation:        "2",
+  proprietaryDataset:        "2",
+  crmAdoption:               "3",
+  // Relational Capital
+  networkQuality:        "2",
+  partnershipStructure:  "2",
+  brandAssets:           "3",
+  ecosystemReferrals:    "2",
+  repeatCustomers:       "3",
 };
 
 export default function App() {
@@ -53,9 +66,17 @@ export default function App() {
     if (currentStep === 1) {
       fieldsToValidate = ['companyName', 'sector', 'lifecycle', 'objective', 'horizon'];
     } else if (currentStep === 2) {
-      fieldsToValidate = ['revenueY1', 'revenueY2', 'revenueY3', 'ebitda', 'techInvestment'];
+      fieldsToValidate = ['revenueY1', 'revenueY2', 'revenueY3', 'ebitda', 'netFinancialPosition', 'techInvestment'];
     } else if (currentStep === 3) {
-      fieldsToValidate = ['recurringRevenue', 'clientConcentration', 'founderDependency', 'managementStructure', 'digitalMaturity', 'clientPortfolio', 'scalability', 'networkStrength'];
+      fieldsToValidate = [
+        'recurringRevenue', 'clientConcentration',
+        // Human Capital
+        'keyManRisk', 'spanOfControl', 'skillInvestment', 'talentRetention', 'sopStandardization',
+        // Technological Capital
+        'operationalDigitalization', 'dataStorage', 'workflowAutomation', 'proprietaryDataset', 'crmAdoption',
+        // Relational Capital
+        'networkQuality', 'partnershipStructure', 'brandAssets', 'ecosystemReferrals', 'repeatCustomers',
+      ];
     }
 
     const isValid = await trigger(fieldsToValidate);

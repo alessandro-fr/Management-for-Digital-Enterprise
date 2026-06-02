@@ -17,6 +17,7 @@ e restituisce:
 # TABELLE DI CONTESTO
 # ─────────────────────────────────────────────
 
+# TODO: consolidare in constants.py (duplicato in valuation.py)
 # Multipli EBITDA per settore (fonte: Mediobanca SME Report, Damodaran)
 SECTOR_MULTIPLES = {
     "Tecnologia/SaaS":       7.5,
@@ -41,15 +42,16 @@ SECTOR_GF_FACTORS = {
 }
 
 # Benchmark di settore per i 4 capitali
-# Usati per mostrare gap vs media nel dashboard
+# financial: calcolato da dati AIDA + stime settoriali (aprile 2026)
+# technological, human, relational: stime qualitative invariate
 SECTOR_BENCHMARKS = {
-    "Tecnologia/SaaS":      {"financial": 0.72, "technological": 0.80, "human": 0.65, "relational": 0.70},
-    "Servizi B2B":          {"financial": 0.65, "technological": 0.55, "human": 0.60, "relational": 0.68},
-    "Manifatturiero":       {"financial": 0.60, "technological": 0.45, "human": 0.55, "relational": 0.50},
-    "Healthcare":           {"financial": 0.68, "technological": 0.60, "human": 0.70, "relational": 0.65},
-    "Retail/GDO":           {"financial": 0.55, "technological": 0.50, "human": 0.50, "relational": 0.60},
-    "Edilizia/Immobiliare": {"financial": 0.58, "technological": 0.40, "human": 0.52, "relational": 0.55},
-    "Altro":                {"financial": 0.62, "technological": 0.52, "human": 0.57, "relational": 0.58},
+    "Tecnologia/SaaS":      {"financial": 0.59, "technological": 0.78, "human": 0.62, "relational": 0.68},
+    "Servizi B2B":          {"financial": 0.53, "technological": 0.52, "human": 0.58, "relational": 0.65},
+    "Manifatturiero":       {"financial": 0.45, "technological": 0.42, "human": 0.53, "relational": 0.48},
+    "Healthcare":           {"financial": 0.59, "technological": 0.55, "human": 0.68, "relational": 0.62},
+    "Retail/GDO":           {"financial": 0.55, "technological": 0.48, "human": 0.50, "relational": 0.58},
+    "Edilizia/Immobiliare": {"financial": 0.36, "technological": 0.38, "human": 0.50, "relational": 0.52},
+    "Altro":                {"financial": 0.50, "technological": 0.50, "human": 0.55, "relational": 0.56},
 }
 
 
@@ -59,76 +61,97 @@ SECTOR_BENCHMARKS = {
 
 def score_financial_capital(n: dict) -> float:
     """
-    Capitale Finanziario — peso nel SQF: 35%
+    Capitale Finanziario — peso nel SQF: varia per settore (default 35%)
     Misura la solidità e qualità economica dell'azienda.
-    È il capitale più pesante perché interamente verificabile da bilancio.
 
-    Variabili:
-      - ebitda_margin      (30%) → redditività operativa
-      - revenue_cagr       (25%) → traiettoria di crescita
-      - recurring_revenue  (25%) → qualità e prevedibilità dei ricavi
-      - client_concentration (20%) → rischio di concentrazione (inversa)
+    Variabili (5):
+      - ebitda_margin      (25%) → redditività operativa
+      - revenue_cagr       (20%) → traiettoria di crescita
+      - recurring_revenue  (20%) → qualità e prevedibilità dei ricavi
+      - client_concentration (15%) → rischio di concentrazione (inversa)
+      - debt_ebitda        (20%) → livello di indebitamento (inversa)
+
+    Fonte soglie Debt/EBITDA: AIDA Bureau van Dijk, aprile 2026
     """
     score = (
-        n["ebitda_margin"]       * 0.30 +
-        n["revenue_cagr"]        * 0.25 +
-        n["recurring_revenue"]   * 0.25 +
-        n["client_concentration"]* 0.20
+        n["ebitda_margin"]       * 0.25 +
+        n["revenue_cagr"]        * 0.20 +
+        n["recurring_revenue"]   * 0.20 +
+        n["client_concentration"]* 0.15 +
+        n["debt_ebitda"]         * 0.20
     )
     return round(score, 4)
 
 
 def score_technological_capital(n: dict) -> float:
     """
-    Capitale Tecnologico — peso nel SQF: 25%
+    Capitale Tecnologico — peso nel SQF: varia per settore (default 25%)
     Misura la maturità digitale e la capacità di crescere
     senza aumentare proporzionalmente i costi.
 
-    Variabili:
-      - digital_maturity  (40%) → quanto sono digitalizzati i processi
-      - tech_investment   (35%) → quanto si investe in tecnologia
-      - scalability       (25%) → quanto il modello è scalabile
+    Variabili (6):
+      - operational_digitalization (25%) → integrazione digitale nelle operazioni
+      - workflow_automation         (25%) → automazione dei processi
+      - tech_investment             (20%) → investimento tecnologico su fatturato (quantitativo)
+      - crm_adoption                (15%) → gestione clienti in CRM
+      - data_storage                (10%) → centralizzazione informazioni
+      - proprietary_dataset          (5%) → asset dati proprietari
     """
     score = (
-        n["digital_maturity"]  * 0.40 +
-        n["tech_investment"]   * 0.35 +
-        n["scalability"]       * 0.25
+        n["operational_digitalization"] * 0.25 +
+        n["workflow_automation"]        * 0.25 +
+        n["tech_investment"]            * 0.20 +
+        n["crm_adoption"]               * 0.15 +
+        n["data_storage"]               * 0.10 +
+        n["proprietary_dataset"]        * 0.05
     )
     return round(score, 4)
 
 
 def score_human_capital(n: dict) -> float:
     """
-    Capitale Umano & Organizzativo — peso nel SQF: 25%
-    Misura la trasferibilità e solidità organizzativa.
-    Critico per valutazioni in ottica di exit o investimento.
+    Capitale Umano & Organizzativo — peso nel SQF: varia per settore (default 25%)
+    Misura la trasferibilità e solidità organizzativa dell'azienda.
 
-    Variabili:
-      - founder_dependency      (40%) → rischio dipendenza (già inversa dal L1)
-      - management_structure    (35%) → solidità del team manageriale
-      - client_portfolio_quality (25%) → qualità e fidelizzazione clienti
+    Variabili (5):
+      - key_man_risk          (35%) → dipendenza dal fondatore (inversa — già invertita in L1)
+      - span_of_control       (25%) → struttura di delega e middle management
+      - talent_retention      (20%) → stabilità della forza lavoro
+      - sop_standardization   (15%) → maturità dei processi operativi
+      - skill_investment       (5%) → investimento nello sviluppo delle competenze
     """
     score = (
-        n["founder_dependency"]       * 0.40 +
-        n["management_structure"]     * 0.35 +
-        n["client_portfolio_quality"] * 0.25
+        n["key_man_risk"]        * 0.35 +
+        n["span_of_control"]     * 0.25 +
+        n["talent_retention"]    * 0.20 +
+        n["sop_standardization"] * 0.15 +
+        n["skill_investment"]    * 0.05
     )
     return round(score, 4)
 
 
 def score_relational_capital(n: dict) -> float:
     """
-    Capitale Relazionale — peso nel SQF: 15%
+    Capitale Relazionale — peso nel SQF: varia per settore (default 15%)
     Misura la forza della rete e delle relazioni strategiche.
-    Pesa meno perché è il più soggettivo e volatile nel tempo.
 
-    Variabili:
-      - network_strength       (60%) → qualità delle partnership
-      - client_concentration   (40%) → proxy: dipendere da pochi = rete debole
+    Nota: client_concentration è RIMOSSA da questo capitale
+    (già usata nel capitale finanziario). repeat_customers
+    sostituisce la proxy di fidelizzazione.
+
+    Variabili (5):
+      - network_quality        (30%) → canali di acquisizione clienti indipendenti
+      - ecosystem_referrals    (25%) → partner che generano clienti attivamente
+      - repeat_customers       (20%) → fidelizzazione e lealtà del cliente
+      - partnership_structure  (15%) → solidità della rete di partnership formali
+      - brand_assets           (10%) → visibilità e presenza digitale
     """
     score = (
-        n["network_strength"]        * 0.60 +
-        n["client_concentration"]    * 0.40
+        n["network_quality"]       * 0.30 +
+        n["ecosystem_referrals"]   * 0.25 +
+        n["repeat_customers"]      * 0.20 +
+        n["partnership_structure"] * 0.15 +
+        n["brand_assets"]          * 0.10
     )
     return round(score, 4)
 
@@ -249,9 +272,9 @@ def calculate_scalability_index(scores: dict, n: dict) -> dict:
       ≥ 0.70 → HIGH
     """
     scalability_raw = (
-        scores["technological"] * 0.50 +
-        n["scalability"]        * 0.30 +
-        scores["relational"]    * 0.20
+        scores["technological"]  * 0.50 +
+        n["workflow_automation"] * 0.30 +
+        scores["relational"]     * 0.20
     )
     if scalability_raw < 0.40:
         return {"label": "LOW",    "color": "#e17055", "value": round(scalability_raw, 4)}

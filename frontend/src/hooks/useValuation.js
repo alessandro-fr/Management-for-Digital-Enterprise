@@ -43,18 +43,31 @@ export async function submitValuation(formData) {
         revenue_y1:          parseFloat(formData.revenueY1),
         revenue_y2:          parseFloat(formData.revenueY2),
         revenue_y3:          parseFloat(formData.revenueY3),
-        ebitda:              parseFloat(formData.ebitda),
-        tech_investment_pct: parseFloat(formData.techInvestment),
+        ebitda:                  parseFloat(formData.ebitda),
+        net_financial_position:  parseFloat(formData.netFinancialPosition),
+        tech_investment_pct:     parseFloat(formData.techInvestment),
 
         // Step 3
         recurring_revenue_pct:         parseFloat(formData.recurringRevenue),
         client_concentration_pct:      parseFloat(formData.clientConcentration),
-        founder_dependency:            parseInt(formData.founderDependency),
-        management_structure:          parseInt(formData.managementStructure),
-        digital_maturity:              parseInt(formData.digitalMaturity),
-        client_portfolio_quality:      parseInt(formData.clientPortfolio),
-        business_model_scalability:    parseInt(formData.scalability),
-        network_partnership_strength:  parseInt(formData.networkStrength),
+        // Human Capital
+        key_man_risk:                  parseInt(formData.keyManRisk),
+        span_of_control:               parseInt(formData.spanOfControl),
+        skill_investment:              parseInt(formData.skillInvestment),
+        talent_retention:              parseInt(formData.talentRetention),
+        sop_standardization:           parseInt(formData.sopStandardization),
+        // Technological Capital
+        operational_digitalization:    parseInt(formData.operationalDigitalization),
+        data_storage:                  parseInt(formData.dataStorage),
+        workflow_automation:           parseInt(formData.workflowAutomation),
+        proprietary_dataset:           parseInt(formData.proprietaryDataset),
+        crm_adoption:                  parseInt(formData.crmAdoption),
+        // Relational Capital
+        network_quality:               parseInt(formData.networkQuality),
+        partnership_structure:         parseInt(formData.partnershipStructure),
+        brand_assets:                  parseInt(formData.brandAssets),
+        ecosystem_referrals:           parseInt(formData.ecosystemReferrals),
+        repeat_customers:              parseInt(formData.repeatCustomers),
       })
     });
 

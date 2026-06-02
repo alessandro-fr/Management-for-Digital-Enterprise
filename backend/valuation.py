@@ -15,6 +15,7 @@ e restituisce:
 # COSTANTI
 # ─────────────────────────────────────────────
 
+# TODO: consolidare in constants.py (duplicato in scorer.py)
 # Multipli EBITDA per settore
 # Fonte ispirazione: Damodaran (NYU), Mediobanca SME Report
 SECTOR_MULTIPLES = {
@@ -265,6 +266,19 @@ def run_valuation(scoring_output: dict, raw_inputs: dict, sector: str, objective
     # Calcoli
     valuation     = calculate_value(ebitda, sector, sqf, gf)
     value_gap     = calculate_value_gap(ebitda, sector, sqf, gf)
+
+    # _ebitda_margin_pct e _cagr_pct sono presenti solo nel flusso completo L1→L3.
+    # Se run_valuation() viene chiamata standalone questi campi potrebbero mancare.
+    from recommender import generate_recommendations
+    actions = generate_recommendations(
+        scores            = scoring_output["scores"],
+        raw_inputs        = raw_inputs,
+        ebitda_margin_pct = raw_inputs.get("_ebitda_margin_pct", 0),
+        cagr_pct          = raw_inputs.get("_cagr_pct", 0),
+        objective         = objective,
+        lang              = "it",
+        sector            = sector
+    )
 
     return {
         # Valutazione

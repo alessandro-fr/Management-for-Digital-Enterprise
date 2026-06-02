@@ -13,17 +13,24 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
   const rev1 = parseFloat(watch("revenueY1")) || 0;
   const rev3 = parseFloat(watch("revenueY3")) || 0;
   const ebitda = parseFloat(watch("ebitda")) || 0;
+  const nfp = parseFloat(watch("netFinancialPosition")) || 0;
 
   // CAGR calculation: ( (Rev3 / Rev1)^(1/2) ) - 1
   let cagr = 0;
   if (rev1 > 0 && rev3 > 0) {
     cagr = (Math.pow(rev3 / rev1, 0.5) - 1) * 100;
   }
-  
+
   // EBITDA Margin calculation: EBITDA / Rev3
   let margin = 0;
   if (rev3 > 0 && ebitda > 0) {
     margin = (ebitda / rev3) * 100;
+  }
+
+  // Debt/EBITDA calculation: NFP / EBITDA
+  let debtEbitda = null;
+  if (ebitda > 0 && nfp !== 0) {
+    debtEbitda = nfp / ebitda;
   }
 
   // Drag and Drop handlers
@@ -185,6 +192,14 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
             error={errors.ebitda}
             {...register("ebitda", { required: t("s2Req") })}
           />
+          <Input
+            label={t("s2NFP")}
+            type="number"
+            placeholder="0"
+            rightIcon={<span className="text-[var(--color-text-muted)] text-sm">€</span>}
+            error={errors.netFinancialPosition}
+            {...register("netFinancialPosition", { required: t("s2Req") })}
+          />
         </div>
       </div>
 
@@ -203,6 +218,14 @@ export const Step2Financials = ({ register, control, errors, watch }) => {
               <span className="text-[var(--color-text-primary)] font-medium">Revenue CAGR</span>
               <span className="font-mono text-3xl font-bold tracking-tighter text-[var(--color-text-primary)]">{cagr.toFixed(1)}<span className="text-lg text-[var(--color-text-muted)]">%</span></span>
             </div>
+            {debtEbitda !== null && (
+              <div className="flex justify-between items-center border-b border-[var(--color-border-subtle)] pb-4">
+                <span className="text-[var(--color-text-primary)] font-medium">Debt / EBITDA</span>
+                <span className="font-mono text-3xl font-bold tracking-tighter text-[var(--color-text-primary)]">
+                  {debtEbitda.toFixed(2)}<span className="text-lg text-[var(--color-text-muted)]">x</span>
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="p-4 bg-[var(--color-bg-subtle)] rounded-xl text-center">

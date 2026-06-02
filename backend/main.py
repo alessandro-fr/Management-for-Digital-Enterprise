@@ -1,7 +1,6 @@
 """
 VALUE INTELLIGENCE PLATFORM
 main.py — FastAPI Backend
-Autore: G. Tedeschi (Master in Data Science for Management - Cattolica)
 
 Avvio:
   pip install fastapi uvicorn
@@ -60,23 +59,37 @@ class ValutazioneInput(BaseModel):
     assets:       Optional[List[str]] = []
 
     # Step 2 — Bilancio
-    revenue_y1:          float
-    revenue_y2:          float
-    revenue_y3:          float
-    ebitda:              float
-    tech_investment_pct: float
+    revenue_y1:             float
+    revenue_y2:             float
+    revenue_y3:             float
+    ebitda:                 float
+    net_financial_position: float
+    tech_investment_pct:    float
 
     # Step 3 — Questionario quantitativo
     recurring_revenue_pct:    float
     client_concentration_pct: float
 
-    # Step 3 — Questionario qualitativo (1-5)
-    founder_dependency:            int
-    management_structure:          int
-    digital_maturity:              int
-    client_portfolio_quality:      int
-    business_model_scalability:    int
-    network_partnership_strength:  int
+    # Step 3 — Human Capital (1-5)
+    key_man_risk:           int
+    span_of_control:        int
+    skill_investment:       int
+    talent_retention:       int
+    sop_standardization:    int
+
+    # Step 3 — Technological Capital (1-5)
+    operational_digitalization: int
+    data_storage:               int
+    workflow_automation:        int
+    proprietary_dataset:        int
+    crm_adoption:               int
+
+    # Step 3 — Relational Capital (1-5)
+    network_quality:         int
+    partnership_structure:   int
+    brand_assets:            int
+    ecosystem_referrals:     int
+    repeat_customers:        int
 
 
 # ─────────────────────────────────────────────
@@ -101,18 +114,31 @@ def valutazione(input_data: ValutazioneInput):
             "revenue_y2":                  input_data.revenue_y2,
             "revenue_y3":                  input_data.revenue_y3,
             "ebitda":                      input_data.ebitda,
+            "net_financial_position":      input_data.net_financial_position,
             "tech_investment_pct":         input_data.tech_investment_pct,
             "recurring_revenue_pct":       input_data.recurring_revenue_pct,
             "client_concentration_pct":    input_data.client_concentration_pct,
-            "founder_dependency":          input_data.founder_dependency,
-            "management_structure":        input_data.management_structure,
-            "digital_maturity":            input_data.digital_maturity,
-            "client_portfolio_quality":    input_data.client_portfolio_quality,
-            "business_model_scalability":  input_data.business_model_scalability,
-            "network_partnership_strength":input_data.network_partnership_strength,
+            # Human Capital
+            "key_man_risk":                input_data.key_man_risk,
+            "span_of_control":             input_data.span_of_control,
+            "skill_investment":            input_data.skill_investment,
+            "talent_retention":            input_data.talent_retention,
+            "sop_standardization":         input_data.sop_standardization,
+            # Technological Capital
+            "operational_digitalization":  input_data.operational_digitalization,
+            "data_storage":                input_data.data_storage,
+            "workflow_automation":         input_data.workflow_automation,
+            "proprietary_dataset":         input_data.proprietary_dataset,
+            "crm_adoption":                input_data.crm_adoption,
+            # Relational Capital
+            "network_quality":             input_data.network_quality,
+            "partnership_structure":       input_data.partnership_structure,
+            "brand_assets":                input_data.brand_assets,
+            "ecosystem_referrals":         input_data.ecosystem_referrals,
+            "repeat_customers":            input_data.repeat_customers,
         }
 
-        normalized = normalize_all_inputs(raw)
+        normalized = normalize_all_inputs(raw, input_data.sector)
 
         # Estrai i valori derivati calcolati dal L1
         # — servono al recommender per l'impatto dinamico
@@ -143,12 +169,13 @@ def valutazione(input_data: ValutazioneInput):
         # ── RECOMMENDER — Top 3 azioni ────────
         # Passa ebitda_margin_pct e cagr_pct calcolati dal L1
         top3 = generate_recommendations(
-            scores          = scoring["scores"],
-            raw_inputs      = raw,
+            scores            = scoring["scores"],
+            raw_inputs        = raw,
             ebitda_margin_pct = ebitda_margin_pct,   # ← calcolato dal L1
             cagr_pct          = cagr_pct,             # ← calcolato dal L1
-            objective       = input_data.objective,
-            lang              = input_data.language
+            objective         = input_data.objective,
+            lang              = input_data.language,
+            sector            = input_data.sector
         )
 
         # ── OUTPUT ────────────────────────────
@@ -177,6 +204,7 @@ def valutazione(input_data: ValutazioneInput):
             # Dati calcolati utili per il frontend
             "ebitda_margin_pct": ebitda_margin_pct,
             "cagr_pct":          cagr_pct,
+            "debt_ebitda_ratio": normalized["_debt_ebitda_ratio"],
 
             # Top 3 raccomandazioni
             "top3_actions": top3,

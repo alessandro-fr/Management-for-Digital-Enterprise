@@ -23,12 +23,39 @@ OPTIMAL = {
     "ebitda_margin_pct":           20,
     "cagr_pct":                    10,
     "tech_investment_pct":          5,
-    "founder_dependency":           2,
-    "management_structure":         4,
-    "digital_maturity":             4,
-    "client_portfolio_quality":     4,
-    "business_model_scalability":   4,
-    "network_partnership_strength": 4,
+    "key_man_risk":                 2,   # target: fondatore con ≤1 ruolo C-level
+    "span_of_control":              5,   # target: >25% direct reports
+    "skill_investment":             4,   # target: >1.5% su fatturato
+    "talent_retention":             4,   # target: 90-95%
+    "sop_standardization":          4,   # target: alto livello di standardizzazione
+    "operational_digitalization":   4,   # target: app separate per ogni area
+    "workflow_automation":          4,   # target: 6-10 workflow automatizzati
+    "crm_adoption":                 4,   # target: 50-90% clienti in CRM
+    "network_quality":              4,   # target: mostly through organic/referral
+    "partnership_structure":        4,   # target: 2-3 partnership firmate
+    "repeat_customers":             4,   # target: 31-60%
+}
+
+# Target ottimali sector-specific: basati su Q3 AIDA (EBITDA) e Q3 stime ricerca (CAGR)
+# Rappresentano l'obiettivo realistico per una PMI eccellente nel suo settore
+OPTIMAL_EBITDA_BY_SECTOR = {
+    "Tecnologia/SaaS":      18.9,   # Q3 AIDA
+    "Servizi B2B":          18.1,   # Q3 AIDA
+    "Manifatturiero":       15.6,   # Q3 AIDA
+    "Healthcare":           17.8,   # Q3 AIDA
+    "Retail/GDO":            6.4,   # Q3 AIDA — soglia di eccellenza per il Retail
+    "Edilizia/Immobiliare":  9.4,   # Q3 AIDA
+    "Altro":                13.5,
+}
+
+OPTIMAL_CAGR_BY_SECTOR = {
+    "Tecnologia/SaaS":      20.0,   # Q3 stime ricerca
+    "Servizi B2B":           9.0,
+    "Manifatturiero":       10.0,
+    "Healthcare":           11.0,
+    "Retail/GDO":            7.0,
+    "Edilizia/Immobiliare": 10.0,
+    "Altro":                10.0,
 }
 
 # Moltiplicatore impatto per obiettivo — supporta IT e EN
@@ -329,18 +356,22 @@ def horizon(it_text: str, en_text: str, lang: str) -> str:
 # LIBRERIA AZIONI
 # ─────────────────────────────────────────────
 
-def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float, lang: str = "it") -> list:
+def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float,
+                         lang: str = "it", sector: str = "Altro") -> list:
 
     actions = []
     conc  = raw.get("client_concentration_pct", 0)
     rec   = raw.get("recurring_revenue_pct", 0)
     tech  = raw.get("tech_investment_pct", 0)
-    fd    = raw.get("founder_dependency", 3)
-    ms    = raw.get("management_structure", 3)
-    dm    = raw.get("digital_maturity", 3)
-    cpq   = raw.get("client_portfolio_quality", 3)
-    scal  = raw.get("business_model_scalability", 3)
-    ns    = raw.get("network_partnership_strength", 3)
+    fd    = raw.get("key_man_risk", 3)
+    ms    = raw.get("span_of_control", 3)
+    dm    = raw.get("operational_digitalization", 3)
+    cpq   = raw.get("repeat_customers", 3)
+    scal  = raw.get("workflow_automation", 3)
+    ns    = raw.get("network_quality", 3)
+
+    opt_ebitda = OPTIMAL_EBITDA_BY_SECTOR.get(sector, OPTIMAL_EBITDA_BY_SECTOR["Altro"])
+    opt_cagr   = OPTIMAL_CAGR_BY_SECTOR.get(sector, OPTIMAL_CAGR_BY_SECTOR["Altro"])
 
     # ── FINANZIARIO ───────────────────────────
     if conc > 40:
@@ -359,16 +390,20 @@ def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float, l
                         "horizon": horizon("12–18 mesi", "12–18 months", lang),
                         "sqf_delta": f"+{round(g * 0.12, 2)} SQF"})
 
-    if ebitda_margin_pct < 15:
-        g = gap_score(ebitda_margin_pct, OPTIMAL["ebitda_margin_pct"], scale=100)
+    ebitda_threshold = OPTIMAL_EBITDA_BY_SECTOR.get(sector, 13.5) * 0.75
+    if ebitda_margin_pct < ebitda_threshold:
+        g = gap_score(ebitda_margin_pct, opt_ebitda, scale=100)
         t = get_text("ottimizza_costi", lang, margin=round(ebitda_margin_pct, 1))
+        t["kpi"] = f"EBITDA margin: {round(ebitda_margin_pct, 1)}% → >{round(opt_ebitda, 1)}%"
         actions.append({**t, "impact": dynamic_impact(10, g), "capital": "financial",
                         "horizon": horizon("12–24 mesi", "12–24 months", lang),
                         "sqf_delta": f"+{round(g * 0.10, 2)} SQF"})
 
-    if cagr_pct < 7:
-        g = gap_score(cagr_pct, OPTIMAL["cagr_pct"], scale=100)
+    cagr_threshold = OPTIMAL_CAGR_BY_SECTOR.get(sector, 10.0) * 0.60
+    if cagr_pct < cagr_threshold:
+        g = gap_score(cagr_pct, opt_cagr, scale=100)
         t = get_text("accelera_crescita", lang, cagr=round(cagr_pct, 1))
+        t["kpi"] = f"CAGR: {round(cagr_pct, 1)}% → >{round(opt_cagr, 1)}%"
         actions.append({**t, "impact": dynamic_impact(9, g), "capital": "financial",
                         "horizon": horizon("18–36 mesi", "18–36 months", lang),
                         "sqf_delta": f"+{round(g * 0.09, 2)} GF"})
@@ -381,7 +416,7 @@ def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float, l
 
     # ── TECNOLOGICO ───────────────────────────
     if dm <= 3:
-        g = gap_score(dm, OPTIMAL["digital_maturity"], scale=5)
+        g = gap_score(dm, OPTIMAL["operational_digitalization"], scale=5)
         cb = 2 if tech < 2 else 0
         t = get_text("accelera_digitale", lang, dm=dm)
         actions.append({**t, "impact": dynamic_impact(10, g, cb), "capital": "technological",
@@ -396,7 +431,7 @@ def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float, l
                         "sqf_delta": f"+{round(g * 0.08, 2)} SQF"})
 
     if scal <= 3:
-        g = gap_score(scal, OPTIMAL["business_model_scalability"], scale=5)
+        g = gap_score(scal, OPTIMAL["workflow_automation"], scale=5)
         t = get_text("migliora_scalabilita", lang, scal=scal)
         actions.append({**t, "impact": dynamic_impact(8, g), "capital": "technological",
                         "horizon": horizon("24–36 mesi", "24–36 months", lang),
@@ -410,7 +445,7 @@ def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float, l
 
     # ── UMANO ─────────────────────────────────
     if fd >= 3:
-        g = gap_score(fd, OPTIMAL["founder_dependency"], inverse=True, scale=5)
+        g = gap_score(fd, OPTIMAL["key_man_risk"], inverse=True, scale=5)
         cb = 3 if ms <= 2 else 0
         t = get_text("rafforza_management", lang, fd=fd)
         actions.append({**t, "impact": dynamic_impact(12, g, cb), "capital": "human",
@@ -418,16 +453,16 @@ def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float, l
                         "sqf_delta": f"+{round(g * 0.12, 2)} SQF"})
 
     if ms <= 3:
-        g = gap_score(ms, OPTIMAL["management_structure"], scale=5)
+        g = gap_score(ms, OPTIMAL["span_of_control"], scale=5)
         t = get_text("struttura_processi", lang, ms=ms)
         actions.append({**t, "impact": dynamic_impact(9, g), "capital": "human",
                         "horizon": horizon("12–18 mesi", "12–18 months", lang),
                         "sqf_delta": f"+{round(g * 0.09, 2)} SQF"})
 
     if cpq <= 3:
-        g = gap_score(cpq, OPTIMAL["client_portfolio_quality"], scale=5)
+        g = gap_score(cpq, OPTIMAL["repeat_customers"], scale=5)
         t = get_text("qualita_portfolio", lang, cpq=cpq)
-        actions.append({**t, "impact": dynamic_impact(7, g), "capital": "human",
+        actions.append({**t, "impact": dynamic_impact(7, g), "capital": "relational",
                         "horizon": horizon("12–24 mesi", "12–24 months", lang),
                         "sqf_delta": f"+{round(g * 0.07, 2)} SQF"})
 
@@ -439,7 +474,7 @@ def build_action_library(raw: dict, ebitda_margin_pct: float, cagr_pct: float, l
 
     # ── RELAZIONALE ───────────────────────────
     if ns <= 3:
-        g = gap_score(ns, OPTIMAL["network_partnership_strength"], scale=5)
+        g = gap_score(ns, OPTIMAL["network_quality"], scale=5)
         t = get_text("partnership_strategiche", lang, ns=ns)
         actions.append({**t, "impact": dynamic_impact(8, g), "capital": "relational",
                         "horizon": horizon("18–24 mesi", "18–24 months", lang),
@@ -470,15 +505,17 @@ def generate_recommendations(
     ebitda_margin_pct: float,
     cagr_pct: float,
     objective: str = None,
-    lang: str = "it"
+    lang: str = "it",
+    sector: str = "Altro"
 ) -> list:
     """
     Genera le Top 3 azioni prioritarie.
 
     Parametri:
-      lang — "it" per italiano, "en" per inglese (default: "it")
+      lang   — "it" per italiano, "en" per inglese (default: "it")
+      sector — settore per soglie sector-aware (default: "Altro")
     """
-    actions = build_action_library(raw_inputs, ebitda_margin_pct, cagr_pct, lang)
+    actions = build_action_library(raw_inputs, ebitda_margin_pct, cagr_pct, lang, sector)
 
     multipliers = OBJECTIVE_MULTIPLIERS.get(objective, {
         "financial": 1.0, "technological": 1.0, "human": 1.0, "relational": 1.0
@@ -496,15 +533,24 @@ def generate_recommendations(
 if __name__ == "__main__":
 
     raw_example = {
-        "client_concentration_pct":     55,
-        "recurring_revenue_pct":        35,
-        "tech_investment_pct":          3.2,
-        "founder_dependency":           4,
-        "management_structure":         3,
-        "digital_maturity":             3,
-        "client_portfolio_quality":     2,
-        "business_model_scalability":   3,
-        "network_partnership_strength": 2,
+        "client_concentration_pct":    55,
+        "recurring_revenue_pct":       35,
+        "tech_investment_pct":         3.2,
+        "key_man_risk":                4,
+        "span_of_control":             3,
+        "skill_investment":            2,
+        "talent_retention":            3,
+        "sop_standardization":         2,
+        "operational_digitalization":  3,
+        "data_storage":                3,
+        "workflow_automation":         2,
+        "proprietary_dataset":         2,
+        "crm_adoption":                3,
+        "network_quality":             2,
+        "partnership_structure":       2,
+        "brand_assets":                3,
+        "ecosystem_referrals":         2,
+        "repeat_customers":            3,
     }
 
     scores_example = {
